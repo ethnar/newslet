@@ -12,6 +12,12 @@ module.exports = {
   ],
   // add your custom rules here
   'rules': {
+    'padded-blocks': 1,
+    'no-multiple-empty-lines': 0,
+    'no-trailing-spaces': 1,
+    'no-unused-vars': 1,
+    'space-before-function-paren': 1,
+    'semi': 0,
     // allow paren-less arrow functions
     'arrow-parens': 0,
     // allow async-await

@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import AppHeader from './components/AppHeader'
-import NewsList from './components/NewsList'
+import AppHeader from './components/AppHeader';
+import NewsList from './components/NewsList';
 
 export default {
   name: 'app',
