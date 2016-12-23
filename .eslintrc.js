@@ -16,6 +16,7 @@ module.exports = {
     'no-multiple-empty-lines': 0,
     'no-trailing-spaces': 1,
     'no-unused-vars': 1,
+    'spaced-comment': 1,
     'space-before-function-paren': 1,
     'semi': 0,
     // allow paren-less arrow functions

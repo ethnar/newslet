@@ -1,6 +1,6 @@
 <template>
   <div class="app-header">
-    <h1>HEADER!</h1>
+    <h1>Newslet</h1>
     <button @click="addSource();">Add another</button>
   </div>
 </template>
@@ -24,6 +24,22 @@ export default {
 
 <style scoped lang="scss">
  .app-header {
+   $height: 32px;
+
    background: red;
+   height: $height;
+
+   h1 {
+     float: left;
+     line-height: $height;
+     padding: 0 10px;
+     font-weight: bold;
+     color: white;
+     color: white;
+   }
+
+   button {
+     float: right;
+   }
  }
 </style>
