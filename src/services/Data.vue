@@ -17,7 +17,7 @@ export default {
       .distinctUntilChanged();
   },
 
-  update (property, value) {
+  set (property, value) {
     let dataStorage;
     try {
       dataStorage = JSON.parse(

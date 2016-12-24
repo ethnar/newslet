@@ -35,7 +35,6 @@ export default {
      padding: 0 10px;
      font-weight: bold;
      color: white;
-     color: white;
    }
 
    button {

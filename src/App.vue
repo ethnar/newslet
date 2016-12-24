@@ -1,7 +1,11 @@
 <template>
   <div id="app">
-    <app-header></app-header>
-    <news-list></news-list>
+    <div class="app-header-container">
+      <app-header></app-header>
+    </div>
+    <div class="news-list-container">
+      <news-list></news-list>
+    </div>
   </div>
 </template>
 
@@ -23,6 +27,16 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   text-align: center;
   color: #223355;
+}
+
+.app-header-container {
+  position: fixed;
+  width: 100%;
+  z-index: 1;
+}
+
+.news-list-container {
+  padding-top: 32px;
 }
 
 /*** RESET CSS ***/

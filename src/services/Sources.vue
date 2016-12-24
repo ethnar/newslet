@@ -17,7 +17,7 @@ export default {
       .first()
       .toPromise()
       .then(feeders => {
-        Data.update(
+        Data.set(
           'sources',
           feeders
           .map(feeder => feeder.toJSON())

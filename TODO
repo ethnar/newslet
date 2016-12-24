@@ -1,8 +1,10 @@
 - add own feed
-- improve pasring of different feeds
+- improve parsing of different feeds
 - see all feeds
 - remove a feed
 - swipe left/right to remove/add to reading list
 - fresh/all/read/ignored/saved views
-- ensure scroll behaves as expected when new feeds come in
-- auto-refresh feeds
+
+Nice haves:
+- notifications
+- parse pages sources to find rss feeds
