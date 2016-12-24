@@ -9,9 +9,6 @@ export default {
       stream = new Rx.ReplaySubject(1);
       stream.next(JSON.parse(window.localStorage.getItem('dataStorage')));
     }
-    stream
-      .map(allData => allData ? allData[property] : undefined)
-      .distinctUntilChanged();
     return stream
       .map(allData => allData ? allData[property] : undefined)
       .distinctUntilChanged();

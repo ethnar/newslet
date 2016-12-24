@@ -3,18 +3,20 @@
     <div class="updates-available" :class="{visible: updateAvailable}" @click="updateList();">
       More news available
     </div>
-    <div v-for="item in news" class="entry" :class="statusClass(item.status)">
+    <div v-for="(item, index) in news" class="entry" :class="statusClass(item)" ref="items" :data-index="index">
       <div class="thumbnail">
         <img :src="item.imageUrl"/>
       </div>
       <a :href="item.href" class="intro" @click="startReading(item);">
         <div class="heading">
           <div class="title">{{item.title}}</div>
-          <div class="status-icon">{{item.status}}</div>
         </div>
         <pre class="content">{{item.content}}</pre>
         <span class="timestamp">{{item.timestamp}}</span>
       </a>
+    </div>
+    <div class="empty-space">
+      You're up-to-date on all news
     </div>
   </div>
 </template>
@@ -27,24 +29,30 @@ export default {
 
   data: () => ({
     news: [],
-    updateAvailable: false
+    statuses: {},
+    updateAvailable: false,
+    filter: NewsService.STATUS.NEW
   }),
 
   created () {
     const newsStream = NewsService.getNewsStream();
-
     newsStream.subscribe(news => {
       this.latestNews = news;
       if (this.news.length === 0) {
-        this.news = news;
+        this.updateList();
       } else {
         this.updateAvailable = (news[0] && news[0].id !== this.news[0].id);
       }
     });
 
+    NewsService.getStatusesStream()
+      .subscribe((statuses = {}) => {
+        this.statuses = statuses;
+      });
+
     setTimeout(() => {
       this.updateAvailable = true;
-    }, 1000);
+    }, 2000);
 
     window.addEventListener('scroll', this.handleScroll);
   },
@@ -58,23 +66,38 @@ export default {
       NewsService.setStatus(entry, NewsService.STATUS.READ);
     },
 
-    statusClass (status) {
+    statusClass (entry) {
+      const status = this.getStatus(entry);
       switch (status) {
-        case NewsService.STATUS.NEW: return 'status-new';
         case NewsService.STATUS.READ: return 'status-read';
         case NewsService.STATUS.READING_LIST: return 'status-reading-list';
         case NewsService.STATUS.SKIPPED: return 'status-skipped';
+        case NewsService.STATUS.NEW:
+        default:
+          return 'status-new';
       }
     },
 
     handleScroll () {
-      console.log(window.scrollY);
+      this.$refs.items.forEach(dom => {
+        if (dom.offsetTop + dom.offsetHeight < window.scrollY + 33) {
+          const index = dom.getAttribute('data-index');
+          const status = this.getStatus(this.news[index]);
+          if (status === NewsService.STATUS.NEW) {
+            NewsService.setStatus(this.news[index], NewsService.STATUS.SKIPPED);
+          }
+        }
+      });
     },
 
     updateList () {
       window.scrollTo(0, 0);
-      this.news = this.latestNews;
+      this.news = this.latestNews.filter(entry => this.getStatus(entry) === this.filter);
       this.updateAvailable = false;
+    },
+
+    getStatus(entry) {
+      return this.statuses[entry.id] || NewsService.STATUS.NEW;
     }
   }
 }
@@ -105,6 +128,15 @@ export default {
       opacity: 1;
       pointer-events: all;
     }
+  }
+
+  .empty-space {
+    height: calc(100vh - 32px);
+    font-weight: bold;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    width: 100vw;
   }
 
   .entry {

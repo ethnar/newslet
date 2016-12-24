@@ -1,5 +1,4 @@
 <script>
-import Data from '../services/Data';
 import Rx from 'rxjs/Rx';
 import $ from 'jquery';
 
@@ -84,14 +83,7 @@ class Feeder {
         clearInterval(this.interval);
       });
     }
-    return Rx.Observable.combineLatest(this.stream, Data.getStream('statuses')).map(results => {
-      const entries = results[0];
-      const statuses = results[1] || {};
-      return entries.map(entry => {
-        entry.status = statuses[entry.id] || 0;
-        return entry;
-      });
-    });
+    return this.stream;
   }
 }
 

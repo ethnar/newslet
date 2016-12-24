@@ -27,6 +27,10 @@ export default {
       }).switch();
   },
 
+  getStatusesStream () {
+    return Data.getStream('statuses');
+  },
+
   setStatus (entry, status) {
     Data.getStream('statuses') // TODO: const that
       .first()
