@@ -15,7 +15,7 @@
         <span class="timestamp">{{item.timestamp}}</span>
       </a>
     </div>
-    <div class="empty-space">
+    <div class="empty-space" :style="{opacity: allReadOpacity }">
       You're up-to-date on all news
     </div>
   </div>
@@ -31,7 +31,8 @@ export default {
     news: [],
     statuses: {},
     updateAvailable: false,
-    filter: NewsService.STATUS.NEW
+    filter: NewsService.STATUS.NEW,
+    allReadOpacity: 1
   }),
 
   created () {
@@ -41,18 +42,14 @@ export default {
       if (this.news.length === 0) {
         this.updateList();
       } else {
-        this.updateAvailable = (news[0] && news[0].id !== this.news[0].id);
+        this.updateAvailable = (news[0] && news[0].id !== this.mostRecentKnownNews.id);
       }
     });
 
     NewsService.getStatusesStream()
       .subscribe((statuses = {}) => {
-        this.statuses = statuses;
+        this.statuses = JSON.parse(JSON.stringify(statuses));
       });
-
-    setTimeout(() => {
-      this.updateAvailable = true;
-    }, 2000);
 
     window.addEventListener('scroll', this.handleScroll);
   },
@@ -79,24 +76,36 @@ export default {
     },
 
     handleScroll () {
-      this.$refs.items.forEach(dom => {
-        if (dom.offsetTop + dom.offsetHeight < window.scrollY + 33) {
-          const index = dom.getAttribute('data-index');
-          const status = this.getStatus(this.news[index]);
-          if (status === NewsService.STATUS.NEW) {
-            NewsService.setStatus(this.news[index], NewsService.STATUS.SKIPPED);
+      if (this.$refs.items) {
+        this.$refs.items.forEach(dom => {
+          if (dom.offsetTop + dom.offsetHeight < window.scrollY + 5) {
+            const index = dom.getAttribute('data-index');
+            const status = this.getStatus(this.news[index]);
+            if (status === NewsService.STATUS.NEW) {
+              NewsService.setStatus(this.news[index], NewsService.STATUS.SKIPPED);
+            }
           }
-        }
-      });
+        });
+      }
+      this.updateAllReadOpacity();
+    },
+
+    updateAllReadOpacity () {
+      let pixelsToBottom = (document.body.offsetHeight - (window.scrollY + window.innerHeight));
+      this.allReadOpacity = Math.max(1 - pixelsToBottom / 50, 0);
     },
 
     updateList () {
       window.scrollTo(0, 0);
+      this.mostRecentKnownNews = this.latestNews[0];
       this.news = this.latestNews.filter(entry => this.getStatus(entry) === this.filter);
       this.updateAvailable = false;
+      setTimeout(() => {
+        this.updateAllReadOpacity();
+      });
     },
 
-    getStatus(entry) {
+    getStatus (entry) {
       return this.statuses[entry.id] || NewsService.STATUS.NEW;
     }
   }
@@ -122,6 +131,7 @@ export default {
     opacity: 0;
     pointer-events: none;
     transition: all 0.4s linear;
+    z-index: 1;
 
     &.visible {
       top: 40px;
@@ -143,6 +153,10 @@ export default {
     display: flex;
     height: 100px;
     border-bottom: 1px solid #ddd;
+
+    &.status-skipped {
+      opacity: 0.4;
+    }
 
     .thumbnail {
       max-width: 30%;
@@ -179,6 +193,8 @@ export default {
         padding-top: 5px;
         flex-grow: 1;
         overflow: hidden;
+        white-space: pre-wrap;
+        line-height: 130%;
       }
 
       .timestamp {

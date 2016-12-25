@@ -20,8 +20,8 @@ export default {
         Data.set(
           'sources',
           feeders
-          .map(feeder => feeder.toJSON())
-          .concat([properties])
+            .map(feeder => feeder.toJSON())
+            .concat([properties])
         );
       });
   },

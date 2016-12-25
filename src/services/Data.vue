@@ -11,7 +11,7 @@ export default {
     }
     return stream
       .map(allData => allData ? allData[property] : undefined)
-      .distinctUntilChanged();
+      .distinctUntilChanged(undefined, JSON.stringify);
   },
 
   set (property, value) {

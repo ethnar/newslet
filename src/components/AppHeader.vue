@@ -1,7 +1,7 @@
 <template>
   <div class="app-header">
     <h1>Newslet</h1>
-    <button @click="addSource();">Add another</button>
+    <button @click="addSource();">Dev reset</button>
   </div>
 </template>
 
@@ -14,8 +14,14 @@ export default {
   methods: {
     addSource () {
       SourcesService.addSource({
-        rssUrl: 'http://www.polygon.com/rss/index.xml',
-        name: 'Polygon'
+        rssUrl: 'http://www.tvn24.pl/najnowsze.xml',
+        name: 'TVN24'
+      });
+      setTimeout(() => {
+        SourcesService.addSource({
+          rssUrl: 'http://www.polygon.com/rss/index.xml',
+          name: 'Polygon'
+        });
       });
     }
   }
