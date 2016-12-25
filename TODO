@@ -1,10 +1,10 @@
 - add own feed
-- improve parsing of different feeds
 - see all feeds
 - remove a feed
-- swipe left/right to remove/add to reading list
+- swipe left/right to add to maybe/add to reading list
 - fresh/all/read/ignored/saved views
 
 Nice haves:
+- improve parsing of many different feeds
 - notifications
 - parse pages sources to find rss feeds
